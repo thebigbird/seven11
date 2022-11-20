@@ -1,0 +1,8 @@
+getwd()
+setwd("Github")
+ls
+ls()
+dir()
+create_package("~/Documents/seven11")
+library(devtools)
+create_package("~/Documents/seven11")
