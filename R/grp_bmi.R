@@ -1,0 +1,49 @@
+#' @title Recode BMI into CDC categories
+#'
+#' @description From RIDEO package
+#' @param x vector of BMI's to xform
+#' @param depth full or part recodings
+#' @param style names or values for factor levels
+#' @return The recoded factor variable
+grp_bmi<- function (x, depth = "full", style = "name")
+{
+  if (!is.numeric(x)) {
+    stop("BMI input value must be numeric", call. = FALSE)
+  }
+  else if (depth == "full" & style == "name") {
+    output <- factor(dplyr::if_else(x < 18.5, "Underweight",
+                                    dplyr::if_else(x >= 18.5 & x <= 25, "Healthy Weight",
+                                                   dplyr::if_else(x > 25 & x < 30, "Overweight",
+                                                                  dplyr::if_else(x >= 30 & x < 35, "Obesity Stage I",
+                                                                                 dplyr::if_else(x >= 35 & x < 40, "Obesity Stage II",
+                                                                                                dplyr::if_else(x >= 40, "Obesity Stage III",
+                                                                                                               NA_character_)))))), ordered = TRUE,
+                     levels = c("Underweight", "Healthy Weight", "Overweight",
+                                "Obesity Stage I", "Obesity Stage II", "Obesity Stage III"))
+  }
+  else if (depth == "part" & style == "name") {
+    output <- factor(dplyr::if_else(x < 18.5, "Underweight",
+                                    dplyr::if_else(x >= 18.5 & x <= 25, "Healthy Weight",
+                                                   dplyr::if_else(x > 25 & x < 30, "Overweight",
+                                                                  dplyr::if_else(x >= 30, "Obese", NA_character_)))),
+                     ordered = TRUE, levels = c("Underweight", "Healthy Weight",
+                                                "Overweight", "Obese"))
+  }
+  else if (depth == "full" & style == "num") {
+    output <- factor(dplyr::if_else(x < 18.5, "<18.5", dplyr::if_else(x >=
+                                                                        18.5 & x <= 25, "18.5-24.9", dplyr::if_else(x > 25 &
+                                                                                                                      x < 30, "25.0-29.9", dplyr::if_else(x >= 30 & x <
+                                                                                                                                                            35, "30.0-34.9", dplyr::if_else(x >= 35 & x < 40,
+                                                                                                                                                                                            "35.0-39.9", dplyr::if_else(x >= 40, ">40.0", NA_character_)))))),
+                     ordered = TRUE, levels = c("<18.5", "18.5-24.9",
+                                                "25.0-29.9", "30.0-34.9", "35.0-39.9", ">40.0"))
+  }
+  else if (depth == "part" & style == "num") {
+    output <- factor(dplyr::if_else(x < 18.5, "<18.5", dplyr::if_else(x >=
+                                                                        18.5 & x <= 25, "18.5-24.9", dplyr::if_else(x > 25 &
+                                                                                                                      x < 30, "25.0-29.9", dplyr::if_else(x >= 30, ">30.0",
+                                                                                                                                                          "NA")))), ordered = TRUE, levels = c("<18.5", "18.5-24.9",
+                                                                                                                                                                                               "25.0-29.9", ">30.0"))
+  }
+  return(output)
+}
